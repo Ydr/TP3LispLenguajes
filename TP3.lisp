@@ -91,3 +91,32 @@
 (defun pdf-p (file) ;Busca el tipo de archivo en el directorio, que sea PDF
   (and (not (directory-pathname-p file))
   (string-equal "pdf" (pathname-type file))))
+
+(defun recorrerFichero (file); llama a la función recorrerFichero-aux con el archivo como parámetro
+	(recorrerFichero-aux file))
+
+ 
+(defun recorrerFichero-aux (file) ;Recorre los archivos en busca de los tags necesarios y crea la tabla hash con los datos recopilados
+ (let ((in (open file :direction 
+        :input 
+        :element-type 'unsigned-byte)))
+
+	(let ((string (make-string (file-length in))))
+	(dotimes (i (file-length in))
+        (setf (char string i) (code-char (read-byte in))))
+        (setf (gethash *contador* *ht*) (make-instance 'file-pdf 
+		:file-name (if (NULL (buscarTag "Title" string)) "Ninguno" 
+			(buscaCod "Title" "/Author" string))
+		:author-name (if (NULL (buscarTag "Author" string)) "Ninguno" 
+			(buscaCod "Author" "/Creator" string))					
+		:keywords-name (if (NULL (buscarTag "Keywords" string)) "Ninguno" 
+			(buscaCod "Keywords" "/APPL:Keywords" string))
+		:CreateDate-name (if (NULL (buscarTag "CreationDate" string)) "Ninguno" 
+			(buscaCod "CreationDate" "/ModDate" string))))
+	(setf *contador* (+ *contador* 1) ))))
+     
+(defun buscarTag (tag string);Busca de acuerdo al tag en el string, con ayuda de la función search de lisp
+	(search tag string))
+
+(defun buscaCod (tag tag2 string);corta la informacion que se encuentra en los metadatos
+	 (subseq string (+ (buscarTag tag string) (+ (length tag) 1)) (- (buscarTag tag2 string) 1)))
