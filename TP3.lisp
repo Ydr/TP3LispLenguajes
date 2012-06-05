@@ -120,3 +120,39 @@
 
 (defun buscaCod (tag tag2 string);corta la informacion que se encuentra en los metadatos
 	 (subseq string (+ (buscarTag tag string) (+ (length tag) 1)) (- (buscarTag tag2 string) 1)))
+(defun buscar-en (fichero)  ;Función que se debe llamar para pasar por parámetro la dirección de los ficheros a buscar
+	(walk-directory fichero #'recorrerFichero :test #'pdf-p))
+
+;;;;;;
+			
+(defun buscar-titulo(titulo);Busca PDFs con un título en común, si el parámetro son comillas dobles, mostrará todos los datos
+	(maphash #'(lambda (k v) (imprime-titulo v titulo)) *ht*))
+
+(defun imprime-titulo (file titulo); Imprime los metatados referentes al título del PDF
+	(if (search titulo (getTitleName file)) (format t 
+		"Autor: ~a Palabras clave: ~a Fecha de creacion: ~a ~%" (getAuthorName file)(getKeyword file)(getDateName file))))
+;;;;;
+
+(defun buscar-creador(creador);Busca PDFs con un creador en común, si el parámetro son comillas dobles, mostrará todos los datos
+	(maphash #'(lambda (k v) (imprime-creador v creador)) *ht*))
+
+(defun imprime-creador (file creador) ;Imprime los metatados referentes al creador del PDF
+	(if (search creador (getAuthorName file)) (format t 
+	"Nombre de archivo: ~a Palabras clave: ~a Fecha de creacion: ~a ~%" (getTitleName file)(getKeyword file)(getDateName file))))
+
+;;;
+
+(defun buscar-fechacreacion(fechacreacion);Busca PDFs con una fecha de creación en común, si el parámetro son comillas dobles, 		;mostrará todos los datos
+	(maphash #'(lambda (k v) (imprime-fecha v fechacreacion)) *ht*))
+
+(defun imprime-fecha(file fechacreacion); Imprime los metatados referentes a la fecha de creación del PDF
+	(if (search fechacreacion (getDateName file)) (format t 
+		"Nombre de archivo: ~a Autor: ~a Palabras clave: ~a ~%" (getTitleName file)(getAuthorName file)(getKeyword file))))
+
+;;;
+(defun buscar-keyword(keyword) ;Busca PDFs con keywords en común, si el parámetro son comillas dobles, mostrará todos los datos
+	(maphash #'(lambda (k v) (imprime-keyword v keyword)) *ht*))
+
+(defun imprime-keyword (file keyword); Imprime los metatados referentes al keyword del PDF
+	(if (search keyword (getKeyword file)) (format t 
+	"Nombre de archivo: ~s Autor: ~a Fecha de creacion: ~a ~%" (getTitleName file)(getAuthorName file)(getDateName file))))
