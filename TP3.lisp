@@ -1,8 +1,8 @@
 ;Lenguajes de Programaciom
 ;Administracion de Tecnologias de Informacion
-;Integrantes: Ariel Mora, Joshua Hernández, Yader Morales
+;Integrantes: Ariel Mora, Joshua Hernï¿½ndez, Yader Morales
 						   
-(defparameter *contador* 0);Contador que se usará en la tabla hash						   
+(defparameter *contador* 0);Contador que se usarï¿½ en la tabla hash						   
 						   
 (defparameter *ht* (make-hash-table)) ;Realiza la tabla hash que va a contener los valores rescatados del pdf
 
@@ -45,10 +45,10 @@
 (defmethod setDateName((file-pdf file-pdf) CreateDate-name)
 	(setf (slot-value file-pdf 'CreateDate-name) CreateDate-name))
 	
-(defun component-present-p (value) ;Determina si la direccion pasada por parámetro es válida
+(defun component-present-p (value) ;Determina si la direccion pasada por parï¿½metro es vï¿½lida
   (and value (not (eql value :unspecific))))
 
-(defun directory-pathname-p  (p) ;Comprueba si un nombre de ruta ya está en forma de directorio
+(defun directory-pathname-p  (p) ;Comprueba si un nombre de ruta ya estï¿½ en forma de directorio
   (and(not (component-present-p (pathname-name p)))
   (not (component-present-p (pathname-type p)))p))
 
@@ -71,7 +71,7 @@
     (error "Can only list concrete directory names."))
   (directory (directory-wildcard dirname)))
 
-(defun directory-wildcard (dirname);Convierte un nombre de directorio a un nombre de ruta válido
+(defun directory-wildcard (dirname);Convierte un nombre de directorio a un nombre de ruta vï¿½lido
   (make-pathname
    :name :wild
    :type #-clisp :wild #+clisp nil
@@ -92,7 +92,7 @@
   (and (not (directory-pathname-p file))
   (string-equal "pdf" (pathname-type file))))
 
-(defun recorrerFichero (file); llama a la función recorrerFichero-aux con el archivo como parámetro
+(defun recorrerFichero (file); llama a la funciï¿½n recorrerFichero-aux con el archivo como parï¿½metro
 	(recorrerFichero-aux file))
 
  
@@ -115,25 +115,25 @@
 			(buscaCod "CreationDate" "/ModDate" string))))
 	(setf *contador* (+ *contador* 1) ))))
      
-(defun buscarTag (tag string);Busca de acuerdo al tag en el string, con ayuda de la función search de lisp
+(defun buscarTag (tag string);Busca de acuerdo al tag en el string, con ayuda de la funciï¿½n search de lisp
 	(search tag string))
 
 (defun buscaCod (tag tag2 string);corta la informacion que se encuentra en los metadatos
 	 (subseq string (+ (buscarTag tag string) (+ (length tag) 1)) (- (buscarTag tag2 string) 1)))
-(defun buscar-en (fichero)  ;Función que se debe llamar para pasar por parámetro la dirección de los ficheros a buscar
+(defun buscar-en (fichero)  ;Funciï¿½n que se debe llamar para pasar por parï¿½metro la direcciï¿½n de los ficheros a buscar
 	(walk-directory fichero #'recorrerFichero :test #'pdf-p))
 
 ;;;;;;
 			
-(defun buscar-titulo(titulo);Busca PDFs con un título en común, si el parámetro son comillas dobles, mostrará todos los datos
+(defun buscar-titulo(titulo);Busca PDFs con un tï¿½tulo en comï¿½n, si el parï¿½metro son comillas dobles, mostrarï¿½ todos los datos
 	(maphash #'(lambda (k v) (imprime-titulo v titulo)) *ht*))
 
-(defun imprime-titulo (file titulo); Imprime los metatados referentes al título del PDF
+(defun imprime-titulo (file titulo); Imprime los metatados referentes al tï¿½tulo del PDF
 	(if (search titulo (getTitleName file)) (format t 
 		"Autor: ~a Palabras clave: ~a Fecha de creacion: ~a ~%" (getAuthorName file)(getKeyword file)(getDateName file))))
 ;;;;;
 
-(defun buscar-creador(creador);Busca PDFs con un creador en común, si el parámetro son comillas dobles, mostrará todos los datos
+(defun buscar-creador(creador);Busca PDFs con un creador en comï¿½n, si el parï¿½metro son comillas dobles, mostrarï¿½ todos los datos
 	(maphash #'(lambda (k v) (imprime-creador v creador)) *ht*))
 
 (defun imprime-creador (file creador) ;Imprime los metatados referentes al creador del PDF
@@ -142,15 +142,15 @@
 
 ;;;
 
-(defun buscar-fechacreacion(fechacreacion);Busca PDFs con una fecha de creación en común, si el parámetro son comillas dobles, 		;mostrará todos los datos
+(defun buscar-fechacreacion(fechacreacion);Busca PDFs con una fecha de creaciï¿½n en comï¿½n, si el parï¿½metro son comillas dobles, mostrarï¿½ todos los datos
 	(maphash #'(lambda (k v) (imprime-fecha v fechacreacion)) *ht*))
 
-(defun imprime-fecha(file fechacreacion); Imprime los metatados referentes a la fecha de creación del PDF
+(defun imprime-fecha(file fechacreacion); Imprime los metatados referentes a la fecha de creaciï¿½n del PDF
 	(if (search fechacreacion (getDateName file)) (format t 
 		"Nombre de archivo: ~a Autor: ~a Palabras clave: ~a ~%" (getTitleName file)(getAuthorName file)(getKeyword file))))
 
 ;;;
-(defun buscar-keyword(keyword) ;Busca PDFs con keywords en común, si el parámetro son comillas dobles, mostrará todos los datos
+(defun buscar-keyword(keyword) ;Busca PDFs con keywords en comï¿½n, si el parï¿½metro son comillas dobles, mostrarï¿½ todos los datos
 	(maphash #'(lambda (k v) (imprime-keyword v keyword)) *ht*))
 
 (defun imprime-keyword (file keyword); Imprime los metatados referentes al keyword del PDF
